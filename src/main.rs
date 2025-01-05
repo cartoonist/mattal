@@ -12,12 +12,14 @@ fn josephus(n: usize, k: usize) -> usize {
     return position + 1;
 }
 
-fn print_status(status: &Vec<bool>, kidx: usize) {
+fn print_status(status: &Vec<bool>, kidx: usize, foot: bool) {
     for i in 0..status.len() {
         if i == kidx {
             print!("💀");
         } else if status[i] {
             print!("👻");
+        } else if foot {
+            print!("🦶");
         } else {
             print!("👤");
         }
@@ -41,7 +43,7 @@ fn print_header(n: usize) {
     println!();
 }
 
-fn simulate(n: usize, s: usize, k: usize) -> usize {
+fn simulate(n: usize, s: usize, k: usize, foot: bool) -> usize {
     let mut status = vec![false; n];
     print_header(n);
 
@@ -59,7 +61,7 @@ fn simulate(n: usize, s: usize, k: usize) -> usize {
 
         if i != 1 {
             print!("{}\t", j);
-            print_status(&status, j);
+            print_status(&status, j, foot);
         }
     }
     return j;
@@ -101,16 +103,16 @@ fn play() {
 
     let sidx = rand::random::<usize>() % n;
     println!("Starting from you, {}...", players[sidx]);
-    let survived = simulate(n * 2, sidx * 2, NOFSYL);
+    let survived = simulate(n * 2, sidx * 2, NOFSYL, true);
     println!("Congratulations, {}! You survived!", players[survived / 2]);
 }
 
 fn help() {
-    println!("Usage: josephus [command]\n");
+    println!("Usage: mattal [command]\n");
     println!("Commands:");
     println!("\tplay\t\t\tStart a new game of Attal Mattal");
-    println!("\trun <nplayers> <k>\tStart a Josephus problem when every k-th player is eliminated");
-    println!("\trun <min-nplayer> <max-nplayer> <k>\tStart a Josephus problem when every k-th player is eliminated");
+    println!("\trun <nplayers> <k>\tSimulate and solve the Josephus problem with n players and every k-th player eliminated");
+    println!("\trun <min-n> <max-n> <k>\tSimulate and solve the Josephus problem with [min-n, max-n) players and every k-th player eliminated");
 }
 
 fn main() {
@@ -122,7 +124,7 @@ fn main() {
         let n = args[2].parse::<usize>().unwrap();
         let k = args[3].parse::<usize>().unwrap();
         println!("Josephus: {}", josephus(n, k));
-        simulate(n, 0, k);
+        simulate(n, 0, k, false);
         return;
     } else if args.len() == 5 && args[1] == "run" {
         let n_lb = args[2].parse::<usize>().unwrap();
